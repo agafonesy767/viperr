@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agaf-City Loading</title>
+    <!-- Simple Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & BASICS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Oswald', 'Arial Black', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevent scrollbars */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* BACKGROUND */
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.ytimg.com/vi/At21TrFKpg0/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGMgYyhjMA8=&rs=AOn4CLAxvsmPNR5QMWrzlebKszhCR5Uc2Q');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            filter: grayscale(100%); /* B&W Style */
+            z-index: 1;
+        }
+
+        /* MAIN CONTENT WRAPPER */
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        /* TITLE BOX */
+        .title-box {
+            display: inline-block;
+            border: 4px solid #fff;
+            padding: 10px 40px;
+            background: #000;
+            transform: skewX(-10deg);
+            margin-bottom: 30px;
+            box-shadow: 10px 10px 0px rgba(50, 50, 50, 0.5);
+        }
+
+        h1 {
+            font-size: 60px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1;
+            transform: skewX(10deg); /* Unskew text */
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #aaa;
+            letter-spacing: 5px;
+            margin-top: 5px;
+            transform: skewX(10deg);
+            text-transform: uppercase;
+        }
+
+        /* MAIN IMAGE FRAME */
+        .img-frame {
+            border: 2px solid #fff;
+            padding: 5px;
+            background: #000;
+            display: inline-block;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .img-frame img {
+            max-width: 100%;
+            width: 500px;
+            height: auto;
+            display: block;
+            filter: grayscale(100%);
+        }
+
+        /* LOADING BAR AREA */
+        .loader-wrapper {
+            width: 100%;
+            background: #000;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .status-text {
+            font-size: 24px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            height: 35px; /* Prevent jumping */
+            color: #fff;
+            text-shadow: 2px 2px 0 #333;
+        }
+
+        /* THE STRIPED LOADER */
+        .loader-track {
+            width: 100%;
+            height: 20px;
+            border: 2px solid #fff;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%; /* Length of the moving part */
+            background: repeating-linear-gradient(
+                45deg,
+                #fff,
+                #fff 10px,
+                #000 10px,
+                #000 20px
+            );
+            animation: moveBar 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes moveBar {
+            0% { left: 0%; }
+            100% { left: 70%; }
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer"></div>
+
+    <div class="content">
+        <!-- Logo Area -->
+        <div class="title-box">
+            <h1>AGAF-CITY</h1>
+            <div class="subtitle">Loading Resources...</div>
+        </div>
+
+        <!-- Center Image -->
+        <div class="img-frame">
+            <img src="https://i.ytimg.com/vi/At21TrFKpg0/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGMgYyhjMA8=&rs=AOn4CLAxvsmPNR5QMWrzlebKszhCR5Uc2Q" alt="Server Image">
+        </div>
+
+        <!-- Loader -->
+        <div class="loader-wrapper">
+            <div class="status-text" id="status">Загрузка приколов...</div>
+            
+            <div class="loader-track">
+                <div class="loader-bar"></div>
+            </div>
+
+            <div class="footer">
+                <span>Garry's Mod Server</span>
+                <span>Ваши данные защищены (наверное)</span>
+                <span>Wait...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. RANDOM PHRASES ---
+        var phrases = [
+            "Загрузка приколов...",
+            "Ищем, где упали плюхи...",
+            "Генерируем мемы...",
+            "Распаковка админских секретов...",
+            "Настраиваем гравитацию...",
+            "Сборка текстур...",
+            "Подключаем веселье...",
+            "Ждем ответа от базы данных...",
+            "Считаем полигоны...",
+            "Убираем лишние баги (надеюсь)...",
+            "Загружаем атмосферу...",
+            "Подготовка к взлету...",
+            "Прогрев серверов...",
+            "Еще чуть-чуть...",
+            "Скачиваем интернет...",
+            "Проверяем наличие печенек..."
+        ];
+
+        var statusEl = document.getElementById('status');
+
+        function updateText() {
+            var randomIndex = Math.floor(Math.random() * phrases.length);
+            statusEl.innerText = phrases[randomIndex];
+        }
+
+        // Change text every 2.5 seconds
+        setInterval(updateText, 2500);
+
+        // --- 2. MUSIC ---
+        var songs = [
+            "https://image2url.com/r2/default/audio/1773049946602-7e7f15ae-bb2b-4ce6-b274-f24efcb36612.mp3",
+            "https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3",
+	    "https://image2url.com/r2/default/audio/1773051528448-dc81281f-7bbc-496d-abd6-1ba6c00bd92f.mp3"
+        ];
+
+        var audio = new Audio();
+        var randomSong = songs[Math.floor(Math.random() * songs.length)];
+        audio.src = randomSong;
+        audio.volume = 0.4;
+        audio.loop = true;
+
+        // Try to play immediately
+        audio.play().catch(function(e) {
+            console.log("Autoplay blocked by browser policy:", e);
+        });
+
+        // GMod Specific Hook (Standard practice)
+        // If the loading screen passes volume info, we use it.
+        window.SetVolume = function(vol) {
+            audio.volume = vol;
+        }
+    </script>
+</body>
+</html>
