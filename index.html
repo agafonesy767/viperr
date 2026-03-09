@@ -4,78 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agaf-City Loading</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Oswald:wght@700&display=swap');
 
-        :root {
-            --bg-color: #000;
-            --main-color: #fff;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--main-color);
-            font-family: 'JetBrains Mono', monospace;
-            overflow: hidden;
+        /* Reset & Base Styles */
+        body, html {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* Noise Overlay */
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 8;
-            opacity: 0.07;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            background-color: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Scanlines Overlay */
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.3) 50%,
-                rgba(0,0,0,0.3)
-            );
-            background-size: 100% 3px;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* Vignette */
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 40%, black 100%);
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        /* Background Image Animation */
+        /* Background Image with Zoom Effect */
         .bg-image {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Decoded URL to ensure it loads correctly */
             background-image: url('https://i.ytimg.com/vi/At21TrFKpg0/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGMgYyhjMA8=&rs=AOn4CLAxvsmPNR5QMWrzlebKszhCR5Uc2Q');
             background-size: cover;
             background-position: center;
@@ -89,7 +42,75 @@
             100% { transform: scale(1.15); }
         }
 
-        /* The "Back and Forth" Loader */
+        /* Overlays (Noise, Vignette, Scanlines) */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .noise {
+            z-index: 1;
+            opacity: 0.07;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+
+        .scanlines {
+            z-index: 2;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.3) 50%,
+                rgba(0,0,0,0.3)
+            );
+            background-size: 100% 3px;
+        }
+
+        .vignette {
+            z-index: 3;
+            background: radial-gradient(circle, transparent 40%, black 100%);
+        }
+
+        /* Main Content Container */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Main Title */
+        h1.main-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 6rem; /* Large size */
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.5rem;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        /* Subtitle "JOINING" */
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ccc;
+            font-weight: 300;
+            letter-spacing: 0.3rem;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+
+        /* Loader Bar */
         .scanner-container {
             width: 100%;
             max-width: 600px;
@@ -107,7 +128,7 @@
             width: 30%;
             height: 100%;
             background: #fff;
-            animation: shuttle 2s infinite ease-in-out;
+            animation: shuttle 1.5s infinite ease-in-out;
         }
 
         @keyframes shuttle {
@@ -116,95 +137,131 @@
             100% { left: -30%; }
         }
 
-        /* Main Title Style */
-        .main-title {
-            font-family: 'Oswald', sans-serif;
+        /* Status Text Area */
+        .status-area {
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #main-status {
+            font-size: 1.8rem;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 0.5rem;
-            /* No glow/shadow as requested */
+            margin-bottom: 10px;
+            transition: opacity 0.5s ease-out;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        #sub-status {
+            font-size: 1rem;
+            color: #aaa;
+            height: 1.2em; /* fixed height to prevent jumping */
         }
 
-        /* Custom Scrollbar for hidden overflow but logic */
-        ::-webkit-scrollbar { width: 0; }
+        /* Grid Info at bottom */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 600px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+            opacity: 0.6;
+        }
+
+        .grid-item {
+            text-align: center;
+        }
+
+        .grid-item.middle {
+            border-left: 1px solid rgba(255,255,255,0.2);
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .grid-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .grid-value {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* Version Tag */
+        .version {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            z-index: 20;
+            font-size: 0.8rem;
+            color: #666;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1.main-title { font-size: 3rem; }
+            .subtitle { font-size: 1rem; }
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center relative">
+<body>
 
-    <!-- Background Layers -->
+    <!-- Layers -->
     <div class="bg-image"></div>
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
-    <div class="noise"></div>
+    <div class="overlay vignette"></div>
+    <div class="overlay scanlines"></div>
+    <div class="overlay noise"></div>
 
     <!-- Main Content -->
-    <main class="z-20 flex flex-col items-center justify-center w-full max-w-4xl px-4 text-center">
-        
-        <!-- Server Title -->
-        <h1 class="text-7xl md:text-9xl font-bold mb-2 main-title tracking-widest">
-            AGAF-CITY
-        </h1>
-        
-        <!-- Subtitle -->
-        <div class="text-xl md:text-2xl text-gray-300 font-light tracking-widest uppercase mb-12 opacity-80">
-            ПРИСОЕДИНЯЕМСЯ
-        </div>
+    <div class="content">
+        <h1 class="main-title">AGAF-CITY</h1>
+        <div class="subtitle">ПРИСОЕДИНЯЕМСЯ</div>
 
-        <!-- The Loader -->
         <div class="scanner-container">
             <div class="scanner-bar"></div>
         </div>
 
-        <!-- Dynamic Status Area -->
-        <div class="h-24 flex flex-col items-center justify-center">
-            <h2 id="main-status" class="text-2xl font-bold uppercase mb-2">ЗАГРУЗКА ПРИКОЛОВ...</h2>
-            <p id="sub-status" class="text-sm text-gray-400 font-mono h-6"></p>
+        <div class="status-area">
+            <div id="main-status">ЗАГРУЗКА ПРИКОЛОВ...</div>
+            <div id="sub-status"></div>
         </div>
 
-        <!-- Info Grid -->
-        <div class="grid grid-cols-3 gap-8 mt-12 w-full max-w-2xl border-t border-gray-800 pt-8 opacity-60">
-            <div class="text-center">
-                <div class="text-xs text-gray-500 uppercase mb-1">Режим</div>
-                <div class="text-sm font-bold">ZCITY / FUN</div>
+        <div class="info-grid">
+            <div class="grid-item">
+                <div class="grid-label">Режим</div>
+                <div class="grid-value">ZCITY / FUN</div>
             </div>
-            <div class="text-center border-l border-r border-gray-800">
-                <div class="text-xs text-gray-500 uppercase mb-1">Статус</div>
-                <div class="text-sm font-bold">ЛУЧШИЙ</div>
+            <div class="grid-item middle">
+                <div class="grid-label">Статус</div>
+                <div class="grid-value">ЛУЧШИЙ</div>
             </div>
-            <div class="text-center">
-                <div class="text-xs text-gray-500 uppercase mb-1">Визуал</div>
-                <div class="text-sm font-bold">БОМБЕЗНЫЙ</div>
+            <div class="grid-item">
+                <div class="grid-label">Визуал</div>
+                <div class="grid-value">БОМБЕЗНЫЙ</div>
             </div>
         </div>
-
-    </main>
-
-    <!-- Footer / Version -->
-    <div class="fixed bottom-4 right-4 z-20 text-xs text-gray-600 font-mono">
-        v.2.0.4 // SYSTEM_READY
     </div>
 
-
+    <div class="version">v.2.0.4 // SYSTEM_READY</div>
 
     <script>
-        // Music Configuration
-	const tracks = [
+        // --- CONFIGURATION ---
+        const tracks = [
             'https://image2url.com/r2/default/audio/1773049946602-7e7f15ae-bb2b-4ce6-b274-f24efcb36612.mp3',
             'https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3',
             'https://image2url.com/r2/default/audio/1773051528448-dc81281f-7bbc-496d-abd6-1ba6c00bd92f.mp3'
         ];
 
-        // Funny / GMod Specific Phrases
-	const mainPhrases = [
+        // Fixed syntax errors here (added commas)
+        const mainPhrases = [
             "AGAF БОССЯРА",
             "ЛОМАЮ ВАШУ ЖОПУ",
             "СИНХРОНИЗАЦИЯ С СЕРВАЧКОМ",
@@ -213,15 +270,15 @@
             "ПРОВЕРКА ВАШЕГО ОЧКА",
             "РАСПАКОВКА БОМБЫ",
             "ЗАГРУЗКА ПУШЕЧКИ",
-            "ЗАГРУЖАЕМ ЛУЧШИЙ СЕРВЕР"
-        	"ЧТО ПИСАТЬ LOL"
-        	"МЕЛСТРОЙ БЭМ БЭМ ПЭМ"
-            	"ОКАК"
-       		 "SIX SEVEN MELSTROY"
-       		 "ПРИВЕТ АРТУРИЩЕ"
+            "ЗАГРУЖАЕМ ЛУЧШИЙ СЕРВЕР",
+            "ЧТО ПИСАТЬ LOL",
+            "МЕЛСТРОЙ БЭМ БЭМ ПЭМ",
+            "ОКАК",
+            "SIX SEVEN MELSTROY",
+            "ПРИВЕТ АРТУРИЩЕ"
         ];
 
-	const subPhrases = [
+        const subPhrases = [
             "Ищем оружие...",
             "Настраиваем физику пропов...",
             "Договариваемся с Mingebags...",
@@ -242,103 +299,79 @@
             "Ждем ответа от Agaf Engine..."
         ];
 
-        // Elements
+        // --- LOGIC ---
+        
         const mainStatusEl = document.getElementById('main-status');
         const subStatusEl = document.getElementById('sub-status');
+        let currentMainIndex = -1;
+        let typeTimeout;
 
-        // Audio Logic
-        const audio = new Audio();
-        audio.volume = 0.2; 
-        audio.loop = true;
-
-        function playRandomTrack() {
-            const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
-            audio.src = randomTrack;
-            
-            // Try to play immediately. In GMod/Source this usually works. 
-            // In standard browsers it might be blocked, but we removed the overlay as requested.
-            audio.play().then(() => {
-                console.log("Audio playing");
-            }).catch(error => {
-                console.log("Autoplay blocked by browser policy (requires interaction)");
-            });
+        // Music Logic
+        function playRandomMusic() {
+            const track = tracks[Math.floor(Math.random() * tracks.length)];
+            const audio = new Audio(track);
+            audio.volume = 0.3;
+            audio.loop = true;
+            audio.play().catch(e => console.log("Autoplay blocked:", e));
         }
 
-        // Typewriter Logic
-        let typeTimeout; 
-
-        function typeWriter(element, text, speed = 25) {
-            // Clear any pending typing
-            if (typeTimeout) clearTimeout(typeTimeout);
-            
-            element.innerHTML = "";
-            let i = 0;
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    typeTimeout = setTimeout(type, speed);
-                }
+        // Typewriter Effect
+        function typeWriter(text, i = 0) {
+            if (i === 0) subStatusEl.textContent = "";
+            if (i < text.length) {
+                subStatusEl.textContent += text.charAt(i);
+                typeTimeout = setTimeout(() => typeWriter(text, i + 1), 30);
             }
-            type();
         }
 
-        let mainIndex = Math.floor(Math.random() * mainPhrases.length);
+        // Random Phrase Logic
+        function updatePhrases() {
+            // Main phrase fade out
+            mainStatusEl.style.opacity = '0';
 
-        function cycleText() {
-            // Main Status Animation
-            mainStatusEl.style.transition = 'opacity 0.5s ease-out';
-            mainStatusEl.style.opacity = 0;
-            
             setTimeout(() => {
-                // Random main phrase (different from current)
+                // Pick unique random index
                 let newIndex;
                 do {
                     newIndex = Math.floor(Math.random() * mainPhrases.length);
-                } while (newIndex === mainIndex && mainPhrases.length > 1);
-                mainIndex = newIndex;
-                
-                mainStatusEl.innerText = mainPhrases[mainIndex];
-                mainStatusEl.style.opacity = 1;
-            }, 500);
+                } while (newIndex === currentMainIndex);
+                currentMainIndex = newIndex;
 
-            // Sub Status Animation (Typewriter)
-            setTimeout(() => {
-                 const nextSub = subPhrases[Math.floor(Math.random() * subPhrases.length)];
-                 typeWriter(subStatusEl, nextSub, 30);
-            }, 600);
+                // Update text and fade in
+                mainStatusEl.textContent = mainPhrases[currentMainIndex];
+                mainStatusEl.style.opacity = '1';
+
+                // Update sub phrase with typewriter
+                if (typeTimeout) clearTimeout(typeTimeout);
+                const randomSub = subPhrases[Math.floor(Math.random() * subPhrases.length)];
+                typeWriter(randomSub);
+
+            }, 500);
         }
 
         // Initialize
         window.addEventListener('load', () => {
-            // Start audio
-            playRandomTrack();
-            
-            // Initial text set (using random index)
-            mainStatusEl.innerText = mainPhrases[mainIndex];
-            typeWriter(subStatusEl, subPhrases[Math.floor(Math.random() * subPhrases.length)], 30);
-
-            // Start cycle loop
-            setInterval(cycleText, 5000); 
+            playRandomMusic();
+            updatePhrases(); // Initial set
+            setInterval(updatePhrases, 4000); // Change every 4 seconds
         });
 
-        // GMod specific: Hook into actual download progress if available
-        function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-            // This function is called by GMod when loading starts.
-            console.log("Connecting to " + servername);
-        }
+        // --- GMOD HOOKS ---
         
+        // This function receives file updates from GMod
         function DownloadingFile(fileName) {
-            // Called when downloading a specific file
             if (typeTimeout) clearTimeout(typeTimeout);
-            subStatusEl.innerText = "Загрузка: " + fileName;
+            // Show actual file being downloaded
+            subStatusEl.textContent = "Загрузка: " + fileName;
         }
 
-        function SetStatusChanged(status) {
-             if (typeTimeout) clearTimeout(typeTimeout);
-             subStatusEl.innerText = status;
+        function StatusChanged(status) {
+            if (typeTimeout) clearTimeout(typeTimeout);
+            subStatusEl.textContent = status;
         }
+        
+        // Needed for GMod to recognize this as a loading screen sometimes
+        function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {}
     </script>
 </body>
 </html>
