@@ -5,27 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agaf-City Loading</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Oswald:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Oswald:wght@700&display=swap');
 
-        /* RESET & BASE */
-        * {
-            box-sizing: border-box;
+        :root {
+            --bg-color: #000;
+            --main-color: #fff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--main-color);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        body, html {
-            height: 100%;
-            width: 100%;
-            background-color: #000;
-            color: #fff;
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        /* LAYERS */
-        #bg-layer {
+        /* Background Image Animation */
+        .bg-image {
             position: absolute;
             top: 0;
             left: 0;
@@ -34,188 +37,195 @@
             background-image: url('https://i.ytimg.com/vi/At21TrFKpg0/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGMgYyhjMA8=&rs=AOn4CLAxvsmPNR5QMWrzlebKszhCR5Uc2Q');
             background-size: cover;
             background-position: center;
-            /* Black & White filter as requested */
             filter: grayscale(100%) contrast(1.2) brightness(0.4);
-            transform: scale(1);
-            animation: kenburns 30s infinite alternate ease-in-out;
-            z-index: 1;
+            animation: zoomDrift 40s infinite alternate ease-in-out;
+            z-index: 0;
         }
 
-        @keyframes kenburns {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
+        @keyframes zoomDrift {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
         }
 
-        /* EFFECTS OVERLAYS */
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 50%, black 100%);
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        /* MAIN CONTENT CONTAINER - Centered Perfectly */
-        #content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        /* Main Content Wrapper */
+        .content {
             z-index: 10;
+            position: relative;
             text-align: center;
-            width: 80%;
-            max-width: 1000px;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
         }
 
-        /* TYPOGRAPHY */
-        h1 {
+        /* Main Title Style */
+        .main-title {
             font-family: 'Oswald', sans-serif;
-            font-size: 6rem; /* Big text */
-            line-height: 1;
-            margin-bottom: 0.2em;
-            letter-spacing: 10px;
             text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            letter-spacing: 0.5rem;
+            font-size: 5rem;
+            margin: 0;
+            line-height: 1.1;
         }
 
+        /* Subtitle */
         .subtitle {
             font-size: 1.5rem;
-            letter-spacing: 5px;
-            opacity: 0.8;
-            margin-bottom: 3rem;
+            color: #ccc;
+            font-weight: 300;
+            letter-spacing: 0.3rem;
             text-transform: uppercase;
+            margin-bottom: 3rem;
+            opacity: 0.8;
         }
 
-        /* LOADING BAR - The Shuttle */
-        .loader-track {
+        /* The "Back and Forth" Loader */
+        .scanner-container {
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.15);
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
             position: relative;
-            margin: 2rem 0;
             overflow: hidden;
+            margin: 2rem auto;
+            max-width: 600px;
         }
 
-        .loader-shuttle {
+        .scanner-bar {
             position: absolute;
             top: 0;
             left: 0;
+            width: 30%;
             height: 100%;
-            width: 25%; /* Length of the moving line */
             background: #fff;
-            animation: shuttleMove 1.5s infinite ease-in-out;
+            animation: shuttle 2s infinite ease-in-out;
         }
 
-        @keyframes shuttleMove {
-            0% { left: -25%; }
+        @keyframes shuttle {
+            0% { left: -30%; }
             50% { left: 100%; }
-            100% { left: -25%; }
+            100% { left: -30%; }
         }
 
-        /* STATUS TEXT */
-        #status-box {
-            height: 80px; /* Fixed height to prevent jumping */
+        /* Dynamic Status Area */
+        .status-area {
+            height: 120px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
 
         #main-status {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 1.8rem;
+            font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 0.5rem;
+            transition: opacity 0.5s ease;
         }
 
         #sub-status {
-            font-size: 1.2rem;
-            color: #ccc;
-            min-height: 1.5em;
+            font-size: 1rem;
+            color: #aaa;
+            font-family: 'JetBrains Mono', monospace;
+            height: 1.5rem;
         }
 
-        /* FOOTER INFO */
-        .info-bar {
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
             margin-top: 3rem;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            opacity: 0.6;
-            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #888;
             text-transform: uppercase;
+            margin-bottom: 0.25rem;
         }
 
-        .info-item span {
-            display: block;
+        .info-value {
+            font-size: 1rem;
             font-weight: bold;
-            font-size: 1.1rem;
         }
 
-        /* RESPONSIVENESS for smaller screens */
-        @media (max-width: 800px) {
-            h1 { font-size: 4rem; letter-spacing: 5px; }
-            .subtitle { font-size: 1rem; }
-            #main-status { font-size: 1.5rem; }
+        .info-item.middle {
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        /* Version Footer */
+        .version {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            color: #666;
+            z-index: 20;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="bg-layer"></div>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
+    <!-- Background -->
+    <div class="bg-image"></div>
 
-    <div id="content">
-        <h1>AGAF-CITY</h1>
+    <!-- Main Content -->
+    <div class="content">
+        
+        <h1 class="main-title">AGAF-CITY</h1>
         <div class="subtitle">ПРИСОЕДИНЯЕМСЯ</div>
 
-        <div class="loader-track">
-            <div class="loader-shuttle"></div>
+        <div class="scanner-container">
+            <div class="scanner-bar"></div>
         </div>
 
-        <div id="status-box">
-            <div id="main-status">ЗАГРУЗКА...</div>
+        <div class="status-area">
+            <div id="main-status">ЗАГРУЗКА ПРИКОЛОВ...</div>
             <div id="sub-status"></div>
         </div>
 
-        <div class="info-bar">
-            <div class="info-item">Режим<br><span>DARK RP / FUN</span></div>
-            <div class="info-item">Админ<br><span>AGAF</span></div>
-            <div class="info-item">Вайб<br><span>НЕРЕАЛЬНЫЙ</span></div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Режим</div>
+                <div class="info-value">SANDBOX / FUN</div>
+            </div>
+            <div class="info-item middle">
+                <div class="info-label">Статус</div>
+                <div class="info-value">ЛУЧШИЙ</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Визуал</div>
+                <div class="info-value">БОМБЕЗНЫЙ</div>
+            </div>
         </div>
+
     </div>
 
+    <div class="version">v.2.0.5 // SYSTEM_READY</div>
+
     <script>
-        // --- DATA ---
-        const musicTracks = [
+        // --- CONFIGURATION ---
+        const tracks = [
             'https://image2url.com/r2/default/audio/1773049946602-7e7f15ae-bb2b-4ce6-b274-f24efcb36612.mp3',
-            'https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3'
+            'https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3',
+            'https://image2url.com/r2/default/audio/1773051528448-dc81281f-7bbc-496d-abd6-1ba6c00bd92f.mp3'
         ];
 
-        const bigPhrases = [
-            "AGAF БОССЯРА",
+        // FIXED: Removed "AGAF БОССЯРА" and added commas
+        const mainPhrases = [
+            "AGAF БОССЯРА"
             "ЛОМАЮ ВАШУ ЖОПУ",
             "СИНХРОНИЗАЦИЯ С СЕРВАЧКОМ",
             "БЕШАНАЯ СОБАКА",
@@ -231,7 +241,7 @@
             "ПРИВЕТ АРТУРИЩЕ"
         ];
 
-        const smallPhrases = [
+        const subPhrases = [
             "Ищем оружие...",
             "Настраиваем физику пропов...",
             "Договариваемся с Mingebags...",
@@ -255,67 +265,96 @@
         // --- ELEMENTS ---
         const mainStatusEl = document.getElementById('main-status');
         const subStatusEl = document.getElementById('sub-status');
-        let typeInterval;
+        let typeTimeout; 
+        let currentMainIndex = -1;
 
-        // --- FUNCTIONS ---
+        // --- AUDIO ---
+        const audio = new Audio();
+        audio.volume = 0.2; 
+        audio.loop = true;
 
-        // 1. Music Player
-        function playMusic() {
-            const track = musicTracks[Math.floor(Math.random() * musicTracks.length)];
-            const audio = new Audio(track);
-            audio.volume = 0.3; // Not too loud
-            audio.loop = true;
-            audio.play().catch(e => console.log("Autoplay blocked (normal in browsers, fine in GMod):", e));
+        function playRandomTrack() {
+            const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+            audio.src = randomTrack;
+            audio.play().catch(e => console.log("Audio autoplay might be blocked: ", e));
         }
 
-        // 2. Typewriter Effect for Subtitles
-        function typeText(text) {
-            clearInterval(typeInterval);
-            subStatusEl.innerText = "";
+        // --- TYPEWRITER EFFECT ---
+        function typeWriter(text, speed = 30) {
+            if (typeTimeout) clearTimeout(typeTimeout);
+            
+            subStatusEl.textContent = ""; // Clear completely
             let i = 0;
-            typeInterval = setInterval(() => {
+            
+            function type() {
                 if (i < text.length) {
-                    subStatusEl.innerText += text.charAt(i);
+                    subStatusEl.textContent += text.charAt(i);
                     i++;
-                } else {
-                    clearInterval(typeInterval);
+                    typeTimeout = setTimeout(type, speed);
                 }
-            }, 30); // Typing speed
+            }
+            type();
         }
 
-        // 3. Logic to Cycle Phrases
-        function updatePhrases() {
-            // Random Big Phrase
-            const randomBig = bigPhrases[Math.floor(Math.random() * bigPhrases.length)];
-            mainStatusEl.innerText = randomBig;
+        // --- CYCLING LOGIC ---
+        function updateMainText() {
+            // Fade out
+            mainStatusEl.style.opacity = 0;
 
-            // Random Small Phrase (with typewriter)
-            const randomSmall = smallPhrases[Math.floor(Math.random() * smallPhrases.length)];
-            typeText(randomSmall);
+            setTimeout(() => {
+                // Select new random phrase
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * mainPhrases.length);
+                } while (newIndex === currentMainIndex && mainPhrases.length > 1);
+                
+                currentMainIndex = newIndex;
+                mainStatusEl.textContent = mainPhrases[currentMainIndex];
+                
+                // Fade in
+                mainStatusEl.style.opacity = 1;
+            }, 500);
+        }
+
+        function updateSubText() {
+            // Pick random sub phrase and type it
+            const randomSub = subPhrases[Math.floor(Math.random() * subPhrases.length)];
+            typeWriter(randomSub);
+        }
+
+        function cycleAll() {
+            updateMainText();
+            // Delay sub-text slightly for better rhythm
+            setTimeout(updateSubText, 600);
         }
 
         // --- INITIALIZATION ---
-        window.onload = function() {
-            playMusic();
-            updatePhrases();
-            // Change text every 5 seconds
-            setInterval(updatePhrases, 5000);
-        };
+        window.addEventListener('load', () => {
+            playRandomTrack();
+            
+            // Initial Set
+            updateMainText();
+            updateSubText();
 
-        // --- GMOD HOOKS (CRITICAL FOR LOADING SCREEN) ---
-        // These are called by the game engine itself.
-        
-        // When downloading a specific file
-        function DownloadingFile(fileName) {
-            // We override the random text with actual file info when it happens
-            clearInterval(typeInterval);
-            subStatusEl.innerText = "Скачивание: " + fileName;
+            // Loop every 5 seconds
+            setInterval(cycleAll, 5000);
+        });
+
+        // --- GMOD HOOKS ---
+        // These are called by the game engine
+        function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+            console.log("Loading " + servername);
         }
 
-        // When status changes (Connecting, Sending Client Info, etc)
+        function DownloadingFile(fileName) {
+            // If the game is downloading a file, we show it instantly
+            if (typeTimeout) clearTimeout(typeTimeout);
+            subStatusEl.textContent = "Загрузка: " + fileName;
+        }
+
         function SetStatusChanged(status) {
-            clearInterval(typeInterval);
-            subStatusEl.innerText = status;
+             if (typeTimeout) clearTimeout(typeTimeout);
+             subStatusEl.textContent = status;
         }
     </script>
 </body>
