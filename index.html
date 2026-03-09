@@ -5,25 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agaf-City Loading</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Oswald:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Oswald:wght@700&display=swap');
 
-        /* Reset & Base Styles */
-        body, html {
+        /* RESET & BASE */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* Background Image with Zoom Effect */
-        .bg-image {
+        body, html {
+            height: 100%;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* LAYERS */
+        #bg-layer {
             position: absolute;
             top: 0;
             left: 0;
@@ -32,114 +34,109 @@
             background-image: url('https://i.ytimg.com/vi/At21TrFKpg0/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGMgYyhjMA8=&rs=AOn4CLAxvsmPNR5QMWrzlebKszhCR5Uc2Q');
             background-size: cover;
             background-position: center;
-            filter: grayscale(100%) contrast(1.3) brightness(0.3);
-            animation: zoomDrift 40s infinite alternate ease-in-out;
-            z-index: 0;
+            /* Black & White filter as requested */
+            filter: grayscale(100%) contrast(1.2) brightness(0.4);
+            transform: scale(1);
+            animation: kenburns 30s infinite alternate ease-in-out;
+            z-index: 1;
         }
 
-        @keyframes zoomDrift {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.15); }
+        @keyframes kenburns {
+            from { transform: scale(1); }
+            to { transform: scale(1.15); }
         }
 
-        /* Overlays (Noise, Vignette, Scanlines) */
-        .overlay {
-            position: absolute;
+        /* EFFECTS OVERLAYS */
+        .scanlines {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-        }
-
-        .noise {
-            z-index: 1;
-            opacity: 0.07;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-        }
-
-        .scanlines {
-            z-index: 2;
             background: linear-gradient(
                 to bottom,
                 rgba(255,255,255,0),
                 rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.3) 50%,
-                rgba(0,0,0,0.3)
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
             );
-            background-size: 100% 3px;
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 2;
         }
 
         .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, black 100%);
             z-index: 3;
-            background: radial-gradient(circle, transparent 40%, black 100%);
+            pointer-events: none;
         }
 
-        /* Main Content Container */
-        .content {
-            position: relative;
+        /* MAIN CONTENT CONTAINER - Centered Perfectly */
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 10;
             text-align: center;
-            width: 100%;
-            max-width: 900px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 80%;
+            max-width: 1000px;
         }
 
-        /* Main Title */
-        h1.main-title {
+        /* TYPOGRAPHY */
+        h1 {
             font-family: 'Oswald', sans-serif;
-            font-size: 6rem; /* Large size */
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            letter-spacing: 0.5rem;
-            text-transform: uppercase;
+            font-size: 6rem; /* Big text */
             line-height: 1;
+            margin-bottom: 0.2em;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
 
-        /* Subtitle "JOINING" */
         .subtitle {
             font-size: 1.5rem;
-            color: #ccc;
-            font-weight: 300;
-            letter-spacing: 0.3rem;
-            text-transform: uppercase;
-            margin-bottom: 3rem;
+            letter-spacing: 5px;
             opacity: 0.8;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
         }
 
-        /* Loader Bar */
-        .scanner-container {
+        /* LOADING BAR - The Shuttle */
+        .loader-track {
             width: 100%;
-            max-width: 600px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
             position: relative;
-            overflow: hidden;
             margin: 2rem 0;
+            overflow: hidden;
         }
 
-        .scanner-bar {
+        .loader-shuttle {
             position: absolute;
             top: 0;
             left: 0;
-            width: 30%;
             height: 100%;
+            width: 25%; /* Length of the moving line */
             background: #fff;
-            animation: shuttle 1.5s infinite ease-in-out;
+            animation: shuttleMove 1.5s infinite ease-in-out;
         }
 
-        @keyframes shuttle {
-            0% { left: -30%; }
+        @keyframes shuttleMove {
+            0% { left: -25%; }
             50% { left: 100%; }
-            100% { left: -30%; }
+            100% { left: -25%; }
         }
 
-        /* Status Text Area */
-        .status-area {
-            height: 100px;
+        /* STATUS TEXT */
+        #status-box {
+            height: 80px; /* Fixed height to prevent jumping */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -147,121 +144,77 @@
         }
 
         #main-status {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 2rem;
+            font-weight: 800;
             text-transform: uppercase;
-            margin-bottom: 10px;
-            transition: opacity 0.5s ease-out;
+            margin-bottom: 0.5rem;
         }
 
         #sub-status {
-            font-size: 1rem;
-            color: #aaa;
-            height: 1.2em; /* fixed height to prevent jumping */
+            font-size: 1.2rem;
+            color: #ccc;
+            min-height: 1.5em;
         }
 
-        /* Grid Info at bottom */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
+        /* FOOTER INFO */
+        .info-bar {
             margin-top: 3rem;
-            width: 100%;
-            max-width: 600px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
             opacity: 0.6;
-        }
-
-        .grid-item {
-            text-align: center;
-        }
-
-        .grid-item.middle {
-            border-left: 1px solid rgba(255,255,255,0.2);
-            border-right: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .grid-label {
-            font-size: 0.7rem;
-            color: #888;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            margin-bottom: 5px;
         }
 
-        .grid-value {
-            font-size: 1rem;
+        .info-item span {
+            display: block;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
-        /* Version Tag */
-        .version {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            z-index: 20;
-            font-size: 0.8rem;
-            color: #666;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            h1.main-title { font-size: 3rem; }
+        /* RESPONSIVENESS for smaller screens */
+        @media (max-width: 800px) {
+            h1 { font-size: 4rem; letter-spacing: 5px; }
             .subtitle { font-size: 1rem; }
+            #main-status { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Layers -->
-    <div class="bg-image"></div>
-    <div class="overlay vignette"></div>
-    <div class="overlay scanlines"></div>
-    <div class="overlay noise"></div>
+    <div id="bg-layer"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <h1 class="main-title">AGAF-CITY</h1>
+    <div id="content">
+        <h1>AGAF-CITY</h1>
         <div class="subtitle">ПРИСОЕДИНЯЕМСЯ</div>
 
-        <div class="scanner-container">
-            <div class="scanner-bar"></div>
+        <div class="loader-track">
+            <div class="loader-shuttle"></div>
         </div>
 
-        <div class="status-area">
-            <div id="main-status">ЗАГРУЗКА ПРИКОЛОВ...</div>
+        <div id="status-box">
+            <div id="main-status">ЗАГРУЗКА...</div>
             <div id="sub-status"></div>
         </div>
 
-        <div class="info-grid">
-            <div class="grid-item">
-                <div class="grid-label">Режим</div>
-                <div class="grid-value">ZCITY / FUN</div>
-            </div>
-            <div class="grid-item middle">
-                <div class="grid-label">Статус</div>
-                <div class="grid-value">ЛУЧШИЙ</div>
-            </div>
-            <div class="grid-item">
-                <div class="grid-label">Визуал</div>
-                <div class="grid-value">БОМБЕЗНЫЙ</div>
-            </div>
+        <div class="info-bar">
+            <div class="info-item">Режим<br><span>DARK RP / FUN</span></div>
+            <div class="info-item">Админ<br><span>AGAF</span></div>
+            <div class="info-item">Вайб<br><span>НЕРЕАЛЬНЫЙ</span></div>
         </div>
     </div>
 
-    <div class="version">v.2.0.4 // SYSTEM_READY</div>
-
     <script>
-        // --- CONFIGURATION ---
-        const tracks = [
+        // --- DATA ---
+        const musicTracks = [
             'https://image2url.com/r2/default/audio/1773049946602-7e7f15ae-bb2b-4ce6-b274-f24efcb36612.mp3',
-            'https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3',
-            'https://image2url.com/r2/default/audio/1773051528448-dc81281f-7bbc-496d-abd6-1ba6c00bd92f.mp3'
+            'https://image2url.com/r2/default/audio/1773049972927-6764394a-f1cd-402d-bb5d-5fffff6d5995.mp3'
         ];
 
-        // Fixed syntax errors here (added commas)
-        const mainPhrases = [
+        const bigPhrases = [
             "AGAF БОССЯРА",
             "ЛОМАЮ ВАШУ ЖОПУ",
             "СИНХРОНИЗАЦИЯ С СЕРВАЧКОМ",
@@ -278,7 +231,7 @@
             "ПРИВЕТ АРТУРИЩЕ"
         ];
 
-        const subPhrases = [
+        const smallPhrases = [
             "Ищем оружие...",
             "Настраиваем физику пропов...",
             "Договариваемся с Mingebags...",
@@ -299,79 +252,71 @@
             "Ждем ответа от Agaf Engine..."
         ];
 
-        // --- LOGIC ---
-        
+        // --- ELEMENTS ---
         const mainStatusEl = document.getElementById('main-status');
         const subStatusEl = document.getElementById('sub-status');
-        let currentMainIndex = -1;
-        let typeTimeout;
+        let typeInterval;
 
-        // Music Logic
-        function playRandomMusic() {
-            const track = tracks[Math.floor(Math.random() * tracks.length)];
+        // --- FUNCTIONS ---
+
+        // 1. Music Player
+        function playMusic() {
+            const track = musicTracks[Math.floor(Math.random() * musicTracks.length)];
             const audio = new Audio(track);
-            audio.volume = 0.3;
+            audio.volume = 0.3; // Not too loud
             audio.loop = true;
-            audio.play().catch(e => console.log("Autoplay blocked:", e));
+            audio.play().catch(e => console.log("Autoplay blocked (normal in browsers, fine in GMod):", e));
         }
 
-        // Typewriter Effect
-        function typeWriter(text, i = 0) {
-            if (i === 0) subStatusEl.textContent = "";
-            if (i < text.length) {
-                subStatusEl.textContent += text.charAt(i);
-                typeTimeout = setTimeout(() => typeWriter(text, i + 1), 30);
-            }
+        // 2. Typewriter Effect for Subtitles
+        function typeText(text) {
+            clearInterval(typeInterval);
+            subStatusEl.innerText = "";
+            let i = 0;
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    subStatusEl.innerText += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 30); // Typing speed
         }
 
-        // Random Phrase Logic
+        // 3. Logic to Cycle Phrases
         function updatePhrases() {
-            // Main phrase fade out
-            mainStatusEl.style.opacity = '0';
+            // Random Big Phrase
+            const randomBig = bigPhrases[Math.floor(Math.random() * bigPhrases.length)];
+            mainStatusEl.innerText = randomBig;
 
-            setTimeout(() => {
-                // Pick unique random index
-                let newIndex;
-                do {
-                    newIndex = Math.floor(Math.random() * mainPhrases.length);
-                } while (newIndex === currentMainIndex);
-                currentMainIndex = newIndex;
-
-                // Update text and fade in
-                mainStatusEl.textContent = mainPhrases[currentMainIndex];
-                mainStatusEl.style.opacity = '1';
-
-                // Update sub phrase with typewriter
-                if (typeTimeout) clearTimeout(typeTimeout);
-                const randomSub = subPhrases[Math.floor(Math.random() * subPhrases.length)];
-                typeWriter(randomSub);
-
-            }, 500);
+            // Random Small Phrase (with typewriter)
+            const randomSmall = smallPhrases[Math.floor(Math.random() * smallPhrases.length)];
+            typeText(randomSmall);
         }
 
-        // Initialize
-        window.addEventListener('load', () => {
-            playRandomMusic();
-            updatePhrases(); // Initial set
-            setInterval(updatePhrases, 4000); // Change every 4 seconds
-        });
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            playMusic();
+            updatePhrases();
+            // Change text every 5 seconds
+            setInterval(updatePhrases, 5000);
+        };
 
-        // --- GMOD HOOKS ---
+        // --- GMOD HOOKS (CRITICAL FOR LOADING SCREEN) ---
+        // These are called by the game engine itself.
         
-        // This function receives file updates from GMod
+        // When downloading a specific file
         function DownloadingFile(fileName) {
-            if (typeTimeout) clearTimeout(typeTimeout);
-            // Show actual file being downloaded
-            subStatusEl.textContent = "Загрузка: " + fileName;
+            // We override the random text with actual file info when it happens
+            clearInterval(typeInterval);
+            subStatusEl.innerText = "Скачивание: " + fileName;
         }
 
-        function StatusChanged(status) {
-            if (typeTimeout) clearTimeout(typeTimeout);
-            subStatusEl.textContent = status;
+        // When status changes (Connecting, Sending Client Info, etc)
+        function SetStatusChanged(status) {
+            clearInterval(typeInterval);
+            subStatusEl.innerText = status;
         }
-        
-        // Needed for GMod to recognize this as a loading screen sometimes
-        function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {}
     </script>
 </body>
 </html>
