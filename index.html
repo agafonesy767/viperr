@@ -211,54 +211,56 @@
         /* --- SYSTEM LOG (REAL GMOD STATUS) --- */
         .system-log-container {
             position: fixed;
-            bottom: 2.5rem;
+            top: 72%; /* Just below the info grid */
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 900px;
+            width: 95%;
+            max-width: 1200px;
+            height: 25vh; /* Fits the bottom area */
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 25;
             pointer-events: none;
+            /* Fade out at the bottom */
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
         }
 
         .log-entry {
             font-family: 'JetBrains Mono', monospace;
             text-transform: uppercase;
-            margin-bottom: 0.2rem;
-            transition: all 0.5s ease;
+            margin-bottom: 0.1rem;
+            transition: all 0.3s ease;
             text-align: center;
             width: 100%;
             letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* The Newest Entry (First Child) */
         .log-entry:first-child {
-            font-size: 1.8rem; /* Big */
+            font-size: 2rem; /* ОЧЕНЬ КРУПНО */
             color: #fff;
             font-weight: 800;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-            margin-bottom: 1rem; /* Gap between active and history */
-            animation: slideDown 0.3s ease-out;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+            margin-bottom: 1rem; 
+            animation: slideDown 0.2s ease-out;
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         /* History Entries */
-        .log-entry:nth-child(n+2) {
-            font-size: 0.8rem;
-            color: #888;
-            opacity: 0.7;
-        }
-
-        .log-entry:nth-child(n+3) { opacity: 0.5; }
-        .log-entry:nth-child(n+4) { opacity: 0.3; }
-        .log-entry:nth-child(n+5) { opacity: 0.1; }
-        .log-entry:nth-child(n+6) { display: none; }
+        .log-entry:nth-child(2) { font-size: 1.2rem; color: #ccc; opacity: 0.9; }
+        .log-entry:nth-child(3) { font-size: 1rem; color: #aaa; opacity: 0.8; }
+        .log-entry:nth-child(n+4) { font-size: 0.9rem; color: #888; opacity: 0.6; }
+        .log-entry:nth-child(n+8) { font-size: 0.8rem; color: #666; opacity: 0.4; }
+        .log-entry:nth-child(n+12) { opacity: 0; }
 
 
         .footer {
@@ -304,7 +306,7 @@
                 <div class="value">ЛУЧШИЙ</div>
             </div>
             <div class="info-item">
-                <div class="label">Визуал</div>
+                <div class="label">Вайб</div>
                 <div class="value" style="text-shadow: 0 0 10px rgba(255,255,255,0.3);">БОМБЕЗНЫЙ</div>
             </div>
         </div>
@@ -420,10 +422,14 @@
             entry.innerText = "> " + text;
             
             // Insert at top
-            logContainer.insertBefore(entry, logContainer.firstChild);
+            if(logContainer.firstChild) {
+                logContainer.insertBefore(entry, logContainer.firstChild);
+            } else {
+                logContainer.appendChild(entry);
+            }
 
-            // Keep only 6 items
-            while (logContainer.children.length > 6) {
+            // Keep up to 15 items now
+            while (logContainer.children.length > 15) {
                 logContainer.removeChild(logContainer.lastChild);
             }
         }
